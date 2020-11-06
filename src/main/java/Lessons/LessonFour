@@ -87,7 +87,7 @@ public class LessonFour {
             for (int j = 0; j < SIZE; j++) {
                 for (int k = 0; k < DOTS_TO_WIN; k++) {
                     if (map[i+k][j+k] != symbol) checkd++;
-                    if ((j >= DOTS_TO_WIN) & (map[i+k][j-k] != symbol)) checkdobr++;
+                    if (map[i+k][j-k] != symbol) checkdobr++;
                     if (map[i+k][j] != symbol) checkv++;
                     if (map[i][j+k] != symbol) checkg++;
                     if ((checkd == 4) ||  (checkv == 4) || (checkg == 4) || (checkdobr == 4)) return true;
@@ -135,7 +135,7 @@ public class LessonFour {
                 if (map[yturn][xturn+k] == DOT_EMPTY) {xturng = xturn+k; yturng = yturn;} k = 1;
 
                 while ((xturn-k >= 0) & (map[yturn][xturn-k] == DOT_X)) {checkg++; k++;}
-                if (map[yturn][xturn-k] == DOT_EMPTY) {xturng = xturn-k; yturng = yturn;} k = 1;
+                if (map[yturn][xturn-k] == DOT_EMPTY) {xturng = xturn-k; yturng = yturn;}
 
         // в 4х if проверяем перспективность линий, наличие потенциального хода и в последней из больших или равных ходим
 
