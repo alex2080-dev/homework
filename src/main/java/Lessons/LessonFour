@@ -1,31 +1,203 @@
+package Lessons;
+
+import java.util.Random;
 import java.util.Scanner;
 
+/**
+ * Created by geekbrains on 11/3/20
+ */
 public class LessonFour {
 
+    // Переменные - параметры игры
     public static final int SIZE = 3;
     public static final int DOTS_TO_WIN = 3;
+    public static final int LINE_LIMIT = 15;
 
- public static final char DOT_EMPTY = "•";
-    public static final char DOT_X= "X";
-    public static final char DOT_O = "O";
+    // Константы • X O
+    public static final char DOT_EMPTY = '•';
+    public static final char DOT_X = 'X';
+    public static final char DOT_O = 'O';
 
-    public static char [][] map;
+    // Переменные - игровое поле, работа с клавиатурой, случайные числа
+    public static char[][] map;
     public static Scanner scanner = new Scanner(System.in);
     public static Random random = new Random();
+    public static int xturn, yturn;
 
+    // Основной метод
     public static void main(String[] args) {
 
+        // Инициализация игрового поля
+        initMap();
 
+        // Вывод игрового поля
+        printMap();
 
+        // Главный игровой цикл
+        while (true) {
+            // Ход игрока
+            humanTurn();
+            // Печать игрового поля
+            printMap();
+            // Проверка победителя
+            if (checkWin(DOT_X)) {
+                System.out.println("Человеческий игрок одержал победу!");
+                break;
+            }
+            // Проверка полностью заполненного поля
+            if (mapIsFull()) {
+                System.out.println("Ничья!!!");
+                break;
+            }
+            // Ход ИИ
+            aiTurn();
+            // Вывод игрового поля
+            printMap();
+            // Проверка победителя
+            if (checkWin(DOT_O)) {
+                System.out.println("Совершеннейшее существо победило!!!");
+                break;
+            }
+            // Проверка заполненности карты
+            if (mapIsFull()) {
+                System.out.println("Ничья!!!");
+                break;
+            }
+        }
+        // Игра закончена
+        System.out.println("Игра завершена!!!");
 
-
-
-
+        // Закрываем консоль
+        scanner.close();
     }
 
-    public static void initMap (String[] args) {
-
+    private static boolean mapIsFull() {
+        for (int y = 0; y < SIZE; y++) {
+            for (int x = 0; x < SIZE; x++) {
+                if (map[y][x] == DOT_EMPTY) return false;
+            }
+        }
+        return true;
     }
 
+    private static boolean checkWin(char symbol) {
+    int checkv = 0, checkd = 0, checkg = 0, checkdobr = 0;
+
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
+                for (int k = 0; k < DOTS_TO_WIN; k++) {
+                    if (map[i+k][j+k] != symbol) checkd++;
+                    if ((j >= DOTS_TO_WIN) & (map[i+k][j-k] != symbol)) checkdobr++;
+                    if (map[i+k][j] != symbol) checkv++;
+                    if (map[i][j+k] != symbol) checkg++;
+                    if ((checkd == 4) ||  (checkv == 4) || (checkg == 4) || (checkdobr == 4)) return true;
+                    }
+                }
+            }
+        return false;
+            }
+
+
+
+    private static void aiTurn() {
+        int checkv = 0, checkd1 = 0, checkg = 0, checkd2 = 0, //перспективность линии
+
+                xturn1 = -1, yturn1 = -1, xturn2 = -1, yturn2 = -1, //
+                xturnv = -1, yturnv = -1, xturng = -1, yturng = -1, // потенциальные ходы линий
+
+                k=1, x=0, y=0;
+
+        // xturn и yturn глобальные переменные последнего хода человека
+        // в while считаем перспективность(для человека) направления (их 8), проверяя ограничения по размеру поля
+        // в if, если следующее поле пустое, намечаем потенциальные ходы направления (их 8)
+        // направлений 8 - 8 конструкций
+
+
+                while ((xturn+k <= SIZE) & (yturn+k <= SIZE) & (map[yturn+k][xturn+k] == DOT_X)) {checkd1++; k++;}
+                if (map[yturn+k][xturn+k] == DOT_EMPTY) {xturn1 = xturn+k; yturn1 = yturn+k;} k = 1;
+
+                while ((xturn+k >= 0) & (yturn+k >= 0) & (map[yturn-k][xturn-k] == DOT_X)) {checkd1++; k++;}
+                if (map[yturn-k][xturn-k] == DOT_EMPTY) {xturn1 = xturn-k; yturn1 = yturn-k;} k = 1;
+
+                while ((xturn+k >= 0) & (yturn+k <= SIZE) & (map[yturn+k][xturn-k] == DOT_X)) {checkd2++; k++;}
+                if (map[yturn+k][xturn-k] == DOT_EMPTY) {xturn2 = xturn-k; yturn2 = yturn+k;} k = 1;
+
+                while ((xturn+k <= SIZE) & (yturn+k >= 0) & (map[yturn-k][xturn+k] == DOT_X)) {checkd2++; k++;}
+                if (map[yturn-k][xturn+k] == DOT_EMPTY) {xturn2 = xturn+k; yturn2 = yturn-k;} k = 1;
+
+                while ((yturn+k <= SIZE) & (map[yturn+k][xturn] == DOT_X)) {checkv++; k++;}
+                if (map[yturn+k][xturn] == DOT_EMPTY) {xturnv = xturn; yturnv = yturn+k;} k = 1;
+
+                while ((yturn-k >= 0) & (map[yturn-k][xturn] == DOT_X)) {checkv++; k++;}
+                if (map[yturn-k][xturn] == DOT_EMPTY) {xturnv = xturn; yturnv = yturn-k;} k = 1;
+
+                while ((xturn+k <= SIZE) & (map[yturn][xturn+k] == DOT_X)) {checkg++; k++;}
+                if (map[yturn][xturn+k] == DOT_EMPTY) {xturng = xturn+k; yturng = yturn;} k = 1;
+
+                while ((xturn-k >= 0) & (map[yturn][xturn-k] == DOT_X)) {checkg++; k++;}
+                if (map[yturn][xturn-k] == DOT_EMPTY) {xturng = xturn-k; yturng = yturn;} k = 1;
+
+        // в 4х if проверяем перспективность линий, наличие потенциального хода и в последней из больших или равных ходим
+
+                if ((xturn1 != -1) & (checkd1 >= checkd2) & (checkd1 >= checkv) & (checkd1 >= checkg)) {x = xturn1; y = yturn1; }
+                if ((xturn2 != -1) & (checkd2 >= checkd1) & (checkd2 >= checkv) & (checkd2 >= checkg)) {x = xturn2; y = yturn2; }
+                if ((xturnv != -1) & (checkv >= checkd1) & (checkv >= checkg) & (checkv >= checkd2)) {x = xturnv; y = yturnv; }
+                if ((xturng != -1) & (checkg >= checkd1) & (checkg >= checkv) & (checkg >= checkd2)) {x = xturng; y = yturng; }
+                map[x][y] = DOT_O;
+             }
+
+    /**
+     * Предоставляем ход игроку
+     */
+    private static void humanTurn() {
+        int x, y;
+        do {
+            System.out.println("Введите координаты в формате x y в диапазоне [1.." + SIZE + "]");
+            x = scanner.nextInt() - 1;
+            y = scanner.nextInt() - 1;
+        } while (!isCellValid(x, y));
+        map[y][x] = DOT_X; xturn = x; yturn = y;
+    }
+
+    private static boolean isCellValid(int x, int y) {
+        if (x < 0 || x >= SIZE) return false;
+        if (y < 0 || y >= SIZE) return false;
+        if (map[y][x] != DOT_EMPTY) return false;
+        return true;
+    }
+
+    private static void printMap() {
+        // Сделали отступ
+        for (int i = 0; i < LINE_LIMIT; i++) {
+            System.out.println();
+        }
+
+        // Верхняя "Легенда"
+        for (int i = 0; i <= SIZE; i++) {
+            System.out.print(i + " ");
+        }
+        System.out.println();
+
+        // Выводим игровое поле
+        for (int y = 0; y < SIZE; y++) {
+            System.out.print((y + 1) + " ");
+            for (int x = 0; x < SIZE; x++) {
+                System.out.print(map[y][x] + " ");
+            }
+            System.out.println();
+        }
+
+        // Дополнительный отступ
+        System.out.println();
+    }
+
+    private static void initMap() {
+        map = new char[SIZE][SIZE];
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
+                map[i][j] = DOT_EMPTY;
+            }
+        }
+    }
 
 }
