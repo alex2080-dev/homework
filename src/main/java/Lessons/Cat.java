@@ -9,6 +9,5 @@ public class Cat extends Animal {
                                                  // а из аргументов убираем
     }
 
-
 }
 
