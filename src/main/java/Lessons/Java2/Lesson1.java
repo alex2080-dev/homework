@@ -1,8 +1,6 @@
 package Lessons.Java2;
 
 
-import java.io.IOException;
-
 public class Lesson1 {
 
     public static void main(String[] args) {
@@ -34,7 +32,7 @@ public class Lesson1 {
                         System.out.println("Игрок " + i + " не прошел полосу препятствий!");
                         System.out.println();
                         fin = false;
-                     //   j = preps.length;
+
                     }
                 }
 
@@ -45,7 +43,7 @@ public class Lesson1 {
                             System.out.println("Игрок " + i + " не прошел полосу препятствий!");
                             System.out.println();
                             fin = false;
-                          //  j = preps.length;
+
 
                         }
                     }
